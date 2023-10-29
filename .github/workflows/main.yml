@@ -181,7 +181,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release create ${{ needs.check.outputs.version }}
-          --title ${{ github.ref_name }}
+          --title ${{ needs.check.outputs.version }}
           --notes "Built on $(date +'%Y-%m-%d')"
           --repo ${{ github.event.repository.full_name }}
 
@@ -225,20 +225,20 @@ jobs:
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: ffmpeg/
-        run: zip -r ../ffmpeg.zip .
+        run: zip -r ../ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip .
 
       - name: Calculate checksum
         run: >
-          shasum ffmpeg.zip
+          shasum ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
           --algorithm 256
           --binary
-          > ffmpeg.zip.sha256
+          > ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
 
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release upload ${{ needs.check.outputs.version }}
-          "ffmpeg.zip#ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip"
-          "ffmpeg.zip.sha256#ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256"
+          ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
+          ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
           --repo ${{ github.event.repository.full_name }}
