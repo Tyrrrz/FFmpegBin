@@ -11,6 +11,7 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
+  # Check if the latest version of FFmpeg in vcpkg is newer than the latest release
   check:
     runs-on: ubuntu-latest
     permissions:
@@ -48,6 +49,7 @@ jobs:
 
           echo "should-build=$should_build" >> $GITHUB_OUTPUT
 
+  # Build FFmpeg for all supported platforms
   build:
     needs: check
     if: ${{ needs.check.outputs.should-build }}
@@ -63,7 +65,7 @@ jobs:
           - x64
           - x86
           - arm64
-        # Determine runner OS based on the target platform
+        # Determine the runner OS based on the target platform
         include:
           - target-platform: linux
             os: ubuntu-latest
@@ -168,6 +170,7 @@ jobs:
           path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
           if-no-files-found: error
 
+  # Create a new release with the tag matching the FFmpeg version
   release:
     needs:
       - check
@@ -187,6 +190,7 @@ jobs:
           --notes "Built on $(date +'%Y-%m-%d')"
           --repo ${{ github.event.repository.full_name }}
 
+  # Upload the built artifacts to the release
   deploy:
     needs:
       - check
