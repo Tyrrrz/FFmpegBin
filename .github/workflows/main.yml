@@ -109,12 +109,14 @@ jobs:
             "$moniker"
           )
 
-          triplet=$(for preference in "${triplet_preferences[@]}"; do
-            if [ -f "triplets/$preference.cmake" ] || [ -f "triplets/community/$preference.cmake" ]; then
-              echo "$preference"
-              break
-            fi
-          done)
+          triplet=$(
+            for triplet in "${triplet_preferences[@]}"; do
+              if [ -f "triplets/$triplet.cmake" ] || [ -f "triplets/community/$triplet.cmake" ]; then
+                echo "$triplet"
+                break
+              fi
+            done
+          )
 
           features=(
             "core"
