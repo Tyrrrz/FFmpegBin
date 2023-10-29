@@ -1,0 +1,244 @@
+name: main
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    outputs:
+      version: ${{ steps.ffmpeg-package.outputs.version }}
+      should-build: ${{ steps.stale.outputs.should-build }}
+
+    steps:
+      - name: Checkout vcpkg
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
+        with:
+          repository: microsoft/vcpkg
+          ref: master
+
+      - name: Inspect FFmpeg package
+        id: ffmpeg-package
+        run: echo "version=$(cat ports/ffmpeg/vcpkg.json | jq -r '.version')" >> $GITHUB_OUTPUT
+
+      - name: Determine staleness
+        id: stale
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          latest_tag=$(
+            gh release view --json tagName --jq .tagName --repo ${{ github.event.repository.full_name }}
+          ) || $(echo "")
+
+          if [ -z "$latest_tag" ] || [ "${{ steps.ffmpeg-package.outputs.version }}" != "$latest_tag" ]; then
+            should_build="true"
+          else
+            should_build="false"
+          fi
+
+          echo "should-build=$should_build" >> $GITHUB_OUTPUT
+
+  build:
+    needs: check
+    if: ${{ needs.check.outputs.should-build }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target-platform:
+          - linux
+          - windows
+          - osx
+        target-arch:
+          - x64
+          - x86
+          - arm64
+        # Determine runner OS based on the target platform
+        include:
+          - target-platform: linux
+            os: ubuntu-latest
+          - target-platform: windows
+            os: windows-latest
+          - target-platform: osx
+            os: macos-latest
+        exclude:
+          # macOS x86 is not a concept that exists
+          - target-platform: osx
+            target-arch: x86
+          # Can't build for these targets for some reason
+          - target-platform: linux
+            target-arch: x86
+          - target-platform: linux
+            target-arch: arm64
+
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout vcpkg
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
+        with:
+          repository: microsoft/vcpkg
+          ref: master
+
+      - name: Bootstrap vcpkg
+        run: ${{ runner.os == 'Windows' && './bootstrap-vcpkg.bat' || './bootstrap-vcpkg.sh' }}
+
+      - name: Determine configuration
+        id: config
+        shell: bash
+        run: |
+          moniker="${{ matrix.target-arch }}-${{ matrix.target-platform }}"
+
+          triplet_preferences=(
+            "$moniker-static-release"
+            "$moniker-static"
+            "$moniker-release"
+            "$moniker"
+          )
+
+          triplet=$(for preference in "${triplet_preferences[@]}"; do
+            if [ -f "triplets/$preference.cmake" ] || [ -f "triplets/community/$preference.cmake" ]; then
+              echo "$preference"
+              break
+            fi
+          done)
+
+          features=(
+            "core"
+            "avcodec"
+            "avdevice"
+            "avfilter"
+            "avformat"
+            "ffmpeg"
+            "ffplay"
+            "ffprobe"
+            # "nvcodec"
+            "opencl"
+            "postproc"
+            "sdl2"
+            "swscale"
+            "nonfree"
+          )
+
+          features_string=$(IFS=, ; echo "${features[*]}")
+
+          echo "triplet=$triplet" >> $GITHUB_OUTPUT
+          echo "features=$features_string" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: |
+          ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libx11-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libxft-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libxext-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libwayland-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libxkbcommon-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libegl1-mesa-dev' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install libx11' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install libxft' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install libxext' || '' }}
+
+      - name: Build FFmpeg
+        run: >
+          vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
+          --triplet ${{ steps.config.outputs.triplet }}
+          --recurse
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # 3.1.3
+        with:
+          name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
+          path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
+          if-no-files-found: error
+
+  release:
+    needs:
+      - check
+      - build
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create ${{ needs.check.outputs.version }}
+          --title ${{ github.ref_name }}
+          --notes "Built on $(date +'%Y-%m-%d')"
+          --repo ${{ github.event.repository.full_name }}
+
+  deploy:
+    needs:
+      - check
+      - release
+
+    strategy:
+      matrix:
+        target-platform:
+          - linux
+          - windows
+          - osx
+        target-arch:
+          - x64
+          - x86
+          - arm64
+        exclude:
+          # macOS x86 is not a concept that exists
+          - target-platform: osx
+            target-arch: x86
+          # Can't build for these targets for some reason
+          - target-platform: linux
+            target-arch: x86
+          - target-platform: linux
+            target-arch: arm64
+
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        with:
+          name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
+          path: ffmpeg/
+
+      - name: Create package
+        # Change into the artifacts directory to avoid including the directory itself in the zip archive
+        working-directory: ffmpeg/
+        run: zip -r ../ffmpeg.zip .
+
+      - name: Calculate checksum
+        run: >
+          shasum ffmpeg.zip
+          --algorithm 256
+          --binary
+          > ffmpeg.zip.sha256
+
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release upload ${{ needs.check.outputs.version }}
+          "ffmpeg.zip#ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip"
+          "ffmpeg.zip.sha256#ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256"
+          --repo ${{ github.event.repository.full_name }}
