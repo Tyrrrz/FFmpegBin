@@ -52,7 +52,7 @@ jobs:
   # Build FFmpeg for all supported platforms
   build:
     needs: check
-    if: ${{ needs.check.outputs.should-build }}
+    if: ${{ needs.check.outputs.should-build == 'true' }}
 
     strategy:
       fail-fast: false
