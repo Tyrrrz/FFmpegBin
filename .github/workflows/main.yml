@@ -136,7 +136,7 @@ jobs:
             "avdevice"
             "avfilter"
             "avformat"
-            "avisynthplus"
+            ${{ matrix.target-platform != 'windows' && '"avisynthplus"' || '' }}
             "bzip2"
             "dav1d"
             "freetype"
