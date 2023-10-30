@@ -38,21 +38,21 @@ jobs:
           ) || $(echo "")
 
           if [ -z "$latest_tag" ] || [ "${{ steps.ffmpeg-package.outputs.version }}" != "$latest_tag" ]; then
-            should_build="true"
+            stale="true"
           else
-            should_build="false"
+            stale="false"
           fi
 
-          echo "should-build=$should_build" >> $GITHUB_OUTPUT
+          echo "stale=$stale" >> $GITHUB_OUTPUT
 
     outputs:
       version: ${{ steps.ffmpeg-package.outputs.version }}
-      should-build: ${{ steps.stale.outputs.should-build }}
+      stale: ${{ steps.stale.outputs.stale }}
 
   # Build FFmpeg for all supported platforms
-  build:
+  pack:
     needs: check
-    if: ${{ needs.check.outputs.should-build == 'true' }}
+    if: ${{ needs.check.outputs.stale == 'true' }}
 
     strategy:
       fail-fast: false
@@ -214,7 +214,7 @@ jobs:
   release:
     needs:
       - check
-      - build
+      - pack
 
     runs-on: ubuntu-latest
     permissions:
