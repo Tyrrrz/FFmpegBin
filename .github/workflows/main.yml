@@ -17,10 +17,6 @@ jobs:
     permissions:
       contents: read
 
-    outputs:
-      version: ${{ steps.ffmpeg-package.outputs.version }}
-      should-build: ${{ steps.stale.outputs.should-build }}
-
     steps:
       - name: Checkout vcpkg
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
@@ -48,6 +44,10 @@ jobs:
           fi
 
           echo "should-build=$should_build" >> $GITHUB_OUTPUT
+
+    outputs:
+      version: ${{ steps.ffmpeg-package.outputs.version }}
+      should-build: ${{ steps.stale.outputs.should-build }}
 
   # Build FFmpeg for all supported platforms
   build:
