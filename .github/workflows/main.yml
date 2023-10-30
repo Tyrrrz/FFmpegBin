@@ -129,7 +129,7 @@ jobs:
 
             "nonfree"
 
-            "aom"
+            ${{ !(matrix.target-platform == 'windows' && matrix.target-arch == 'x86') && '"aom"' || '' }}
             ${{ matrix.target-platform != 'osx' && '"amf"' || '' }}
             "ass"
             "avcodec"
@@ -178,7 +178,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install autoconf' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install automake' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libtool' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libx11-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libxft-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libxext-dev' || '' }}
@@ -186,10 +188,14 @@ jobs:
           ${{ runner.os == 'Linux' && 'sudo apt install libxkbcommon-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libegl1-mesa-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install autoconf' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install automake' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install libtool' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install libx11' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install libxft' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install libxext' || '' }}
+          ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
 
       - name: Build FFmpeg
         run: >
