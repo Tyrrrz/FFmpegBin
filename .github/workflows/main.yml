@@ -166,7 +166,7 @@ jobs:
             "vpx"
             "webp"
             "x264"
-            "x265"
+            ${{ !(matrix.target-platform == 'windows' && matrix.target-arch == 'arm64') && '"x265"' || '' }}
             "xml2"
             "zlib"
           )
