@@ -25,7 +25,7 @@ jobs:
           ref: master
 
       - name: Inspect FFmpeg package
-        id: ffmpeg-package
+        id: ffmpeg
         run: echo "version=$(cat ports/ffmpeg/vcpkg.json | jq -r '.version')" >> $GITHUB_OUTPUT
 
       - name: Determine staleness
@@ -37,7 +37,7 @@ jobs:
             gh release view --json tagName --jq .tagName --repo ${{ github.event.repository.full_name }}
           ) || $(echo "")
 
-          if [ -z "$latest_tag" ] || [ "${{ steps.ffmpeg-package.outputs.version }}" != "$latest_tag" ]; then
+          if [ "${{ steps.ffmpeg.outputs.version }}" != "$latest_tag" ]; then
             stale="true"
           else
             stale="false"
@@ -46,7 +46,7 @@ jobs:
           echo "stale=$stale" >> $GITHUB_OUTPUT
 
     outputs:
-      version: ${{ steps.ffmpeg-package.outputs.version }}
+      version: ${{ steps.ffmpeg.outputs.version }}
       stale: ${{ steps.stale.outputs.stale }}
 
   # Build FFmpeg for all supported platforms
