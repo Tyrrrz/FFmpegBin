@@ -24,35 +24,25 @@ jobs:
           repository: microsoft/vcpkg
           ref: master
 
-      - name: Inspect FFmpeg package
-        id: ffmpeg
+      - name: Get latest FFmpeg package
+        id: latest-ffmpeg
         run: echo "version=$(cat ports/ffmpeg/vcpkg.json | jq -r '.version')" >> $GITHUB_OUTPUT
 
-      - name: Determine staleness
-        id: stale
+      - name: Get latest release
+        id: latest-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          latest_tag=$(
-            gh release view --json tagName --jq .tagName --repo ${{ github.event.repository.full_name }}
-          ) || $(echo "")
-
-          if [ "${{ steps.ffmpeg.outputs.version }}" != "$latest_tag" ]; then
-            stale="true"
-          else
-            stale="false"
-          fi
-
-          echo "stale=$stale" >> $GITHUB_OUTPUT
+        run: echo "version=$(gh release view --json tagName --jq .tagName --repo ${{ github.event.repository.full_name }})" >> $GITHUB_OUTPUT
 
     outputs:
-      version: ${{ steps.ffmpeg.outputs.version }}
-      stale: ${{ steps.stale.outputs.stale }}
+      version: ${{ steps.latest-ffmpeg.outputs.version }}
+      stale: ${{ steps.latest-ffmpeg.outputs.version != steps.latest-release.outputs.version }}
 
   # Build FFmpeg for all supported platforms
   pack:
     needs: check
-    if: ${{ needs.check.outputs.stale == 'true' }}
+    # Job outputs are passed as strings, so we need to convert the value to an actual boolean
+    if: ${{ fromJson(needs.check.outputs.stale) }}
 
     strategy:
       fail-fast: false
