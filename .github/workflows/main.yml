@@ -12,7 +12,7 @@ on:
 
 jobs:
   # Check if the latest version of FFmpeg in vcpkg is newer than the latest release
-  check:
+  version:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,9 +40,9 @@ jobs:
 
   # Build FFmpeg for all supported platforms
   pack:
-    needs: check
+    needs: version
     # Job outputs are passed as strings, so we need to convert the value to an actual boolean
-    if: ${{ fromJson(needs.check.outputs.stale) }}
+    if: ${{ fromJson(needs.version.outputs.stale) }}
 
     strategy:
       fail-fast: false
@@ -203,7 +203,7 @@ jobs:
   # Create a new release with the tag matching the FFmpeg version
   release:
     needs:
-      - check
+      - version
       - pack
 
     runs-on: ubuntu-latest
@@ -215,15 +215,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
-          gh release create ${{ needs.check.outputs.version }}
-          --title ${{ needs.check.outputs.version }}
+          gh release create ${{ needs.version.outputs.version }}
+          --title ${{ needs.version.outputs.version }}
           --notes "Built on $(date +'%Y-%m-%d')"
           --repo ${{ github.event.repository.full_name }}
 
   # Upload the built artifacts to the release
   deploy:
     needs:
-      - check
+      - version
       - release
 
     strategy:
@@ -274,7 +274,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
-          gh release upload ${{ needs.check.outputs.version }}
+          gh release upload ${{ needs.version.outputs.version }}
           ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
           ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
           --repo ${{ github.event.repository.full_name }}
