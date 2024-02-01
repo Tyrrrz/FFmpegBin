@@ -8,7 +8,7 @@ on:
     paths-ignore:
       - "**.md"
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 1 * *"
 
 jobs:
   # Check if the latest version of FFmpeg in vcpkg is newer than the latest release
