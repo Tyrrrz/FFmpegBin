@@ -1,7 +1,6 @@
 name: main
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
@@ -9,6 +8,12 @@ on:
       - "**.md"
   schedule:
     - cron: "0 0 1 * *"
+  workflow_dispatch:
+    inputs:
+      skip-version-check:
+        type: boolean
+        description: Skip version check
+        required: false
 
 jobs:
   # Check if the latest version of FFmpeg in vcpkg is newer than the latest release
@@ -36,7 +41,7 @@ jobs:
 
     outputs:
       version: ${{ steps.latest-ffmpeg.outputs.version }}
-      stale: ${{ steps.latest-ffmpeg.outputs.version != steps.latest-release.outputs.version }}
+      stale: ${{ inputs.skip-version-check || steps.latest-ffmpeg.outputs.version != steps.latest-release.outputs.version }}
 
   # Build FFmpeg for all supported platforms
   pack:
