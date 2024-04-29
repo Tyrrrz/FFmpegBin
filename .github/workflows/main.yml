@@ -69,14 +69,8 @@ jobs:
           - target-platform: osx
             os: macos-latest
         exclude:
-          # macOS x86 is not a concept that exists
           - target-platform: osx
             target-arch: x86
-          # Can't build for these targets for some reason
-          - target-platform: linux
-            target-arch: x86
-          - target-platform: linux
-            target-arch: arm64
 
     runs-on: ${{ matrix.os }}
     permissions:
@@ -242,14 +236,8 @@ jobs:
           - x86
           - arm64
         exclude:
-          # macOS x86 is not a concept that exists
           - target-platform: osx
             target-arch: x86
-          # Can't build for these targets for some reason
-          - target-platform: linux
-            target-arch: x86
-          - target-platform: linux
-            target-arch: arm64
 
     runs-on: ubuntu-latest
     permissions:
