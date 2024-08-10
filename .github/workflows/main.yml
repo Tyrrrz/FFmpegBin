@@ -194,7 +194,7 @@ jobs:
 
       - name: Build FFmpeg
         run: >
-          vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
+          ./vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
 
