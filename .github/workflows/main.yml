@@ -266,9 +266,9 @@ jobs:
       - name: Set permissions
         if: ${{ matrix.target-platform != 'windows' }}
         run: |
-          chmod +x ffmpeg
-          chmod +x ffplay
-          chmod +x ffprobe
+          chmod +x ffmpeg/ffmpeg
+          chmod +x ffmpeg/ffplay
+          chmod +x ffmpeg/ffprobe
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
