@@ -199,7 +199,7 @@ jobs:
           --recurse
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # 4.5.0
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # 4.6.0
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
           path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
