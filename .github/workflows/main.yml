@@ -199,7 +199,7 @@ jobs:
           --recurse
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # 4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # 4.6.1
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
           path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
@@ -258,7 +258,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # 4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # 4.1.9
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
           path: ffmpeg/
