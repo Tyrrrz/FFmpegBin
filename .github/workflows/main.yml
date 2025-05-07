@@ -277,18 +277,10 @@ jobs:
         working-directory: ffmpeg/
         run: zip -r ../ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip .
 
-      - name: Calculate checksum
-        run: >
-          shasum ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
-          --algorithm 256
-          --binary
-          > ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
-
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release upload ${{ needs.version.outputs.version }}
           ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
-          ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
           --repo ${{ github.event.repository.full_name }}
