@@ -56,6 +56,7 @@ jobs:
           - linux
           - windows
           - osx
+          - android
         target-arch:
           - x64
           - x86
@@ -239,6 +240,7 @@ jobs:
           - linux
           - windows
           - osx
+          - android
         target-arch:
           - x64
           - x86
