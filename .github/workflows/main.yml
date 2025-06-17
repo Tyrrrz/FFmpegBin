@@ -69,6 +69,8 @@ jobs:
             os: windows-latest
           - target-platform: osx
             os: macos-latest
+          - target-platform: android
+            os: ubuntu-latest
         exclude:
           # macOS x86 is not a concept that exists
           - target-platform: osx
