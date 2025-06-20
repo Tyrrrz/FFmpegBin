@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout vcpkg
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
         with:
           repository: microsoft/vcpkg
           ref: master
@@ -46,6 +46,7 @@ jobs:
   # Build FFmpeg for all supported platforms
   pack:
     needs: version
+
     # Job outputs are passed as strings, so we need to convert the value to an actual boolean
     if: ${{ fromJson(needs.version.outputs.stale) }}
 
@@ -79,7 +80,7 @@ jobs:
 
     steps:
       - name: Checkout vcpkg
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # 4.1.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
         with:
           repository: microsoft/vcpkg
           ref: master
@@ -170,6 +171,7 @@ jobs:
           ${{ runner.os == 'Linux' && 'sudo apt install autoconf' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install automake' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libtool' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install libltdl-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libx11-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libxft-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libxext-dev' || '' }}
@@ -178,6 +180,7 @@ jobs:
           ${{ runner.os == 'Linux' && 'sudo apt install libegl1-mesa-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install pkg-config' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install autoconf' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install automake' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install libtool' || '' }}
@@ -188,12 +191,12 @@ jobs:
 
       - name: Build FFmpeg
         run: >
-          vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
+          ./vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # 3.1.3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
           path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
@@ -204,6 +207,9 @@ jobs:
     needs:
       - version
       - pack
+
+    # Only release when running on master
+    if: ${{ github.ref_type == 'branch' && github.ref_name == 'master' }}
 
     runs-on: ubuntu-latest
     permissions:
@@ -246,7 +252,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # 4.3.0
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
           path: ffmpeg/
@@ -254,21 +260,14 @@ jobs:
       - name: Set permissions
         if: ${{ matrix.target-platform != 'windows' }}
         run: |
-          chmod +x ffmpeg
-          chmod +x ffplay
-          chmod +x ffprobe
+          chmod +x ffmpeg/ffmpeg
+          chmod +x ffmpeg/ffplay
+          chmod +x ffmpeg/ffprobe
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: ffmpeg/
         run: zip -r ../ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip .
-
-      - name: Calculate checksum
-        run: >
-          shasum ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
-          --algorithm 256
-          --binary
-          > ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
 
       - name: Upload release assets
         env:
@@ -276,5 +275,4 @@ jobs:
         run: >
           gh release upload ${{ needs.version.outputs.version }}
           ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
-          ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip.sha256
           --repo ${{ github.event.repository.full_name }}
