@@ -197,6 +197,10 @@ jobs:
           ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
 
       - name: Build FFmpeg
+        env:
+          # DBUS_SESSION_SOCKET_DIR: set to an explicit temp directory to avoid issues during x-compilation
+          VCPKG_CMAKE_CONFIGURE_OPTIONS: >
+            -DDBUS_SESSION_SOCKET_DIR=/tmp
         run: >
           ./vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
