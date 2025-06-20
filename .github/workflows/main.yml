@@ -170,8 +170,8 @@ jobs:
         run: |
           # Cross-compilation support
           ${{ runner.os == 'Linux' && 'sudo apt install gcc-multilib' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install g++-multilib' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install gcc-aarch64-linux-gnu' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install g++-multilib' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install g++-aarch64-linux-gnu' || '' }}
 
           # FFmpeg dependencies
