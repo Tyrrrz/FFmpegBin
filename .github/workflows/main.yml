@@ -57,6 +57,7 @@ jobs:
           - linux
           - windows
           - osx
+          - android
         target-arch:
           - x64
           - x86
@@ -69,6 +70,8 @@ jobs:
             os: windows-latest
           - target-platform: osx
             os: macos-latest
+          - target-platform: android
+            os: ubuntu-latest
         exclude:
           # macOS x86 is not a concept that exists
           - target-platform: osx
@@ -143,7 +146,7 @@ jobs:
             "mp3lame"
             ${{ (matrix.target-platform == 'linux' || (matrix.target-platform == 'windows' && matrix.target-arch != 'arm64')) && '"nvcodec"' || '' }}
             "opencl"
-            "opengl"
+            ${{ matrix.target-platform != 'android' && '"opengl"' || '' }}
             "openjpeg"
             "openmpt"
             "openssl"
@@ -243,6 +246,7 @@ jobs:
           - linux
           - windows
           - osx
+          - android
         target-arch:
           - x64
           - x86
