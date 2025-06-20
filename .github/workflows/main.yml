@@ -46,6 +46,7 @@ jobs:
   # Build FFmpeg for all supported platforms
   pack:
     needs: version
+
     # Job outputs are passed as strings, so we need to convert the value to an actual boolean
     if: ${{ fromJson(needs.version.outputs.stale) }}
 
@@ -212,6 +213,9 @@ jobs:
     needs:
       - version
       - pack
+
+    # Only release when running on master
+    if: ${{ github.ref_type == 'branch' && github.ref_name == 'master' }}
 
     runs-on: ubuntu-latest
     permissions:
