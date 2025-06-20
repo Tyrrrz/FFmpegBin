@@ -145,7 +145,7 @@ jobs:
             "mp3lame"
             ${{ (matrix.target-platform == 'linux' || (matrix.target-platform == 'windows' && matrix.target-arch != 'arm64')) && '"nvcodec"' || '' }}
             "opencl"
-            "opengl"
+            ${{ matrix.target-platform != 'android' && '"opengl"' || '' }}
             "openjpeg"
             "openmpt"
             "openssl"
