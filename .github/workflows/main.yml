@@ -168,6 +168,13 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # Cross-compilation support
+          ${{ runner.os == 'Linux' && 'sudo apt install gcc-multilib' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install g++-multilib' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install gcc-aarch64-linux-gnu' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install g++-aarch64-linux-gnu' || '' }}
+
+          # FFmpeg dependencies
           ${{ runner.os == 'Linux' && 'sudo apt install autoconf' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install automake' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libtool' || '' }}
@@ -181,8 +188,6 @@ jobs:
           ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install pkg-config' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install gcc-aarch64-linux-gnu' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install g++-aarch64-linux-gnu' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install autoconf' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install automake' || '' }}
           ${{ runner.os == 'MacOS' && 'brew install libtool' || '' }}
