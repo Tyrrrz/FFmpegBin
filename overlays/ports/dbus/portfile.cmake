@@ -27,7 +27,7 @@ unset(ENV{DBUSDIR})
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        -DBUS_SESSION_SOCKET_DIR=/tmp
+        -DDBUS_SESSION_SOCKET_DIR=/tmp
         -DDBUS_BUILD_TESTS=OFF
         -DDBUS_ENABLE_DOXYGEN_DOCS=OFF
         -DDBUS_ENABLE_XML_DOCS=OFF
