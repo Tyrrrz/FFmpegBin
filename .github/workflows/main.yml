@@ -168,6 +168,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+
           # Cross-compilation support
           ${{ runner.os == 'Linux' && 'sudo apt install linux-headers-$(uname -r)' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install linux-libc-dev:i386' || '' }}
