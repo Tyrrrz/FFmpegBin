@@ -170,6 +170,7 @@ jobs:
         run: |
           # Cross-compilation support
           ${{ runner.os == 'Linux' && 'sudo apt install linux-headers-$(uname -r)' || '' }}
+          ${{ runner.os == 'Linux' && 'sudo apt install linux-libc-dev:i386' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install libc6-dev-i386' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install gcc-multilib' || '' }}
           ${{ runner.os == 'Linux' && 'sudo apt install gcc-aarch64-linux-gnu' || '' }}
