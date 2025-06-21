@@ -222,7 +222,7 @@ jobs:
           vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
-          --overlay-ports=self/overlays/ports/
+          --overlay-ports ../self/overlays/ports/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
