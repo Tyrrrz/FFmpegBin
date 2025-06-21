@@ -84,13 +84,16 @@ jobs:
         with:
           repository: microsoft/vcpkg
           ref: master
+          path: vcpkg/
 
       - name: Bootstrap vcpkg
+        working-directory: vcpkg/
         run: ${{ runner.os == 'Windows' && './bootstrap-vcpkg.bat' || './bootstrap-vcpkg.sh' }}
 
       - name: Determine configuration
         id: config
         shell: bash
+        working-directory: vcpkg/
         run: |
           moniker="${{ matrix.target-arch }}-${{ matrix.target-platform }}"
 
@@ -167,7 +170,7 @@ jobs:
           echo "features=$features_string" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        if: ${{ runner.os != 'Windows' }}
+        shell: bash
         run: |
           # Linux
           if [ "${{ runner.os }}" == "Linux" ]; then
@@ -215,10 +218,12 @@ jobs:
           fi
 
       - name: Build FFmpeg
+        working-directory: vcpkg/
         run: >
           ./vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
+          --overlay-ports overlays/ports/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
