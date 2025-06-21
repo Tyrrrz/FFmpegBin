@@ -17,9 +17,10 @@ index 77fc19c..2f25643 100644
 @@ -140,6 +140,9 @@
  /* Define to 1 if you have getgrouplist */
  #cmakedefine   HAVE_GETGROUPLIST 1
-
+ 
 +/* Define to 1 if you have getpeereid */
 +#cmakedefine   HAVE_GETPEEREID 1
 +
  /* Define to 1 if you have getpeerucred */
  #cmakedefine   HAVE_GETPEERUCRED 1
+ 

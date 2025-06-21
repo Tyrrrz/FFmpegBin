@@ -8,5 +8,5 @@ index e464f60..fc991f4 100644
      install(DIRECTORY DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/system-services)
 -    install(DIRECTORY DESTINATION ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/run/dbus)
  endif()
-
+ 
  if(DBUS_SERVICE)

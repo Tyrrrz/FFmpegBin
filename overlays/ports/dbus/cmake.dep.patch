@@ -1,6 +1,6 @@
 diff --git a/tools/CMakeLists.txt b/tools/CMakeLists.txt
 index 8cde1ffe0..d4d09f223 100644
---- a/tools/CMakeLists.txt
+--- a/tools/CMakeLists.txt	
 +++ b/tools/CMakeLists.txt
 @@ -91,7 +91,9 @@ endif()
  add_executable(dbus-launch ${dbus_launch_SOURCES})
@@ -12,3 +12,4 @@ index 8cde1ffe0..d4d09f223 100644
 +    target_include_directories(dbus-launch PRIVATE ${X11_INCLUDE_DIR})
  endif()
  install(TARGETS dbus-launch ${INSTALL_TARGETS_DEFAULT_ARGS})
+ 
