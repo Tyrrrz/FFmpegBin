@@ -174,10 +174,10 @@ jobs:
         run: |
           # Linux
           if [ "${{ runner.os }}" == "Linux" ]; then
+            sudo dpkg --add-architecture i386
             sudo apt update
 
             # X-compilation support
-            sudo dpkg --add-architecture i386
             sudo apt install -y \
               linux-headers-$(uname -r) \
               linux-libc-dev:i386 \
