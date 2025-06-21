@@ -181,43 +181,40 @@ jobs:
             sudo apt update
 
             # X-compilation support
-            sudo apt install -y \
-              linux-headers-$(uname -r) \
-              linux-libc-dev:i386 \
-              libc6-dev-i386 \
-              gcc-multilib \
-              gcc-aarch64-linux-gnu \
-              g++-multilib \
-              g++-aarch64-linux-gnu
+            sudo apt install linux-headers-$(uname -r)
+            sudo apt install linux-libc-dev:i386
+            sudo apt install libc6-dev-i386
+            sudo apt install gcc-multilib
+            sudo apt install gcc-aarch64-linux-gnu
+            sudo apt install g++-multilib
+            sudo apt install g++-aarch64-linux-gnu
 
             # FFmpeg dependencies
-            sudo apt install -y \
-              autoconf \
-              automake \
-              libtool \
-              libltdl-dev \
-              libx11-dev \
-              libxft-dev \
-              libxext-dev \
-              libwayland-dev \
-              libxkbcommon-dev \
-              libegl1-mesa-dev \
-              libibus-1.0-dev \
-              nasm \
-              pkg-config
+            sudo apt install autoconf
+            sudo apt install automake
+            sudo apt install libtool
+            sudo apt install libltdl-dev
+            sudo apt install libx11-dev
+            sudo apt install libxft-dev
+            sudo apt install libxext-dev
+            sudo apt install libwayland-dev
+            sudo apt install libxkbcommon-dev
+            sudo apt install libegl1-mesa-dev
+            sudo apt install libibus-1.0-dev
+            sudo apt install nasm
+            sudo apt install pkg-config
           fi
 
           # MacOS
           if [ "${{ runner.os }}" == "MacOS" ]; then
             # FFmpeg dependencies
-            brew install \
-              autoconf \
-              automake \
-              libtool \
-              libx11 \
-              libxft \
-              libxext \
-              nasm
+            brew install autoconf
+            brew install automake
+            brew install libtool
+            brew install libx11
+            brew install libxft
+            brew install libxext
+            brew install nasm
           fi
 
       - name: Build FFmpeg
