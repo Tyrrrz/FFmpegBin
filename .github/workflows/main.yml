@@ -206,7 +206,7 @@ jobs:
           fi
 
           # MacOS
-          if [ "${{ runner.os }}" == "MacOS" ]; then
+          if [ "${{ runner.os }}" == "macOS" ]; then
             # FFmpeg dependencies
             brew install autoconf
             brew install automake
