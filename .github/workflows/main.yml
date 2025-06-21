@@ -167,40 +167,52 @@ jobs:
           echo "features=$features_string" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
+        if: ${{ runner.os != 'Windows' }}
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt update
+          # Linux
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            sudo apt update
 
-          # Cross-compilation support
-          ${{ runner.os == 'Linux' && 'sudo apt install linux-headers-$(uname -r)' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install linux-libc-dev:i386' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libc6-dev-i386' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install gcc-multilib' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install gcc-aarch64-linux-gnu' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install g++-multilib' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install g++-aarch64-linux-gnu' || '' }}
+            # X-compilation support
+            sudo dpkg --add-architecture i386
+            sudo apt install -y \
+              linux-headers-$(uname -r) \
+              linux-libc-dev:i386 \
+              libc6-dev-i386 \
+              gcc-multilib \
+              gcc-aarch64-linux-gnu \
+              g++-multilib \
+              g++-aarch64-linux-gnu
 
-          # FFmpeg dependencies
-          ${{ runner.os == 'Linux' && 'sudo apt install autoconf' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install automake' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libtool' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libltdl-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libx11-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxft-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxext-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libwayland-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxkbcommon-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libegl1-mesa-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install pkg-config' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install autoconf' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install automake' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libtool' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libx11' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libxft' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libxext' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
+            # FFmpeg dependencies
+            sudo apt install -y \
+              autoconf \
+              automake \
+              libtool \
+              libltdl-dev \
+              libx11-dev \
+              libxft-dev \
+              libxext-dev \
+              libwayland-dev \
+              libxkbcommon-dev \
+              libegl1-mesa-dev \
+              libibus-1.0-dev \
+              nasm \
+              pkg-config
+          fi
+
+          # MacOS
+          if [ "${{ runner.os }}" == "MacOS" ]; then
+            # FFmpeg dependencies
+            brew install \
+              autoconf \
+              automake \
+              libtool \
+              libx11 \
+              libxft \
+              libxext \
+              nasm
+          fi
 
       - name: Build FFmpeg
         run: >
