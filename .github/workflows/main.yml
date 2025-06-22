@@ -143,7 +143,7 @@ jobs:
             "mp3lame"
             ${{ (matrix.target-platform == 'linux' || (matrix.target-platform == 'windows' && matrix.target-arch != 'arm64')) && '"nvcodec"' || '' }}
             "opencl"
-            "opengl"
+            ${{ matrix.target-platform != 'linux' || matrix.target-arch != 'arm64' && '"opengl"' || '' }}
             "openjpeg"
             "openmpt"
             "openssl"
@@ -219,7 +219,7 @@ jobs:
 
       - name: Build FFmpeg
         run: >
-          vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
+          vcpkg/vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
           --overlay-ports self/overlays/ports/
@@ -228,7 +228,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
-          path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
+          path: vcpkg/installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
           if-no-files-found: error
 
   # Create a new release with the tag matching the FFmpeg version
