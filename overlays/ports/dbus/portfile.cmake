@@ -67,7 +67,6 @@ file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/share/dbus-1/system-services"
     "${CURRENT_PACKAGES_DIR}/share/dbus-1/system.d"
     "${CURRENT_PACKAGES_DIR}/share/dbus-1/system.conf"
-    "${CURRENT_PACKAGES_DIR}/share/dbus-1/system.conf"
     "${CURRENT_PACKAGES_DIR}/share/doc"
     "${CURRENT_PACKAGES_DIR}/var"
 )
