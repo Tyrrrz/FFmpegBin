@@ -70,14 +70,9 @@ jobs:
           - target-platform: osx
             os: macos-latest
         exclude:
-          # macOS x86 is not a concept that exists
+          # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
-          # Can't build for these targets for some reason
-          - target-platform: linux
-            target-arch: x86
-          - target-platform: linux
-            target-arch: arm64
 
     runs-on: ${{ matrix.os }}
     permissions:
@@ -85,14 +80,20 @@ jobs:
       actions: write
 
     steps:
+      - name: Checkout self
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        with:
+          path: self/
+
       - name: Checkout vcpkg
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
         with:
           repository: microsoft/vcpkg
           ref: master
+          path: vcpkg/
 
       - name: Bootstrap vcpkg
-        run: ${{ runner.os == 'Windows' && './bootstrap-vcpkg.bat' || './bootstrap-vcpkg.sh' }}
+        run: ${{ runner.os == 'Windows' && 'vcpkg/bootstrap-vcpkg.bat' || 'vcpkg/bootstrap-vcpkg.sh' }}
 
       - name: Determine configuration
         id: config
@@ -109,7 +110,7 @@ jobs:
 
           triplet=$(
             for triplet in "${triplet_preferences[@]}"; do
-              if [ -f "triplets/$triplet.cmake" ] || [ -f "triplets/community/$triplet.cmake" ]; then
+              if [ -f "vcpkg/triplets/$triplet.cmake" ] || [ -f "vcpkg/triplets/community/$triplet.cmake" ]; then
                 echo "$triplet"
                 break
               fi
@@ -143,7 +144,7 @@ jobs:
             "mp3lame"
             ${{ (matrix.target-platform == 'linux' || (matrix.target-platform == 'windows' && matrix.target-arch != 'arm64')) && '"nvcodec"' || '' }}
             "opencl"
-            "opengl"
+            ${{ (matrix.target-platform != 'linux' || (matrix.target-arch != 'arm64' && matrix.target-arch != 'x86')) && '"opengl"' || '' }}
             "openjpeg"
             "openmpt"
             "openssl"
@@ -173,39 +174,62 @@ jobs:
           echo "features=$features_string" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
+        shell: bash
         run: |
-          ${{ runner.os == 'Linux' && 'sudo apt install autoconf' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install automake' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libtool' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libltdl-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libx11-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxft-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxext-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libwayland-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libxkbcommon-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libegl1-mesa-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install libibus-1.0-dev' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install nasm' || '' }}
-          ${{ runner.os == 'Linux' && 'sudo apt install pkg-config' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install autoconf' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install automake' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libtool' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libx11' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libxft' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install libxext' || '' }}
-          ${{ runner.os == 'MacOS' && 'brew install nasm' || '' }}
+          # Linux
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            sudo dpkg --add-architecture i386
+            sudo apt update
+
+            # X-compilation support
+            sudo apt install linux-headers-$(uname -r)
+            sudo apt install linux-libc-dev:i386
+            sudo apt install libc6-dev-i386
+            sudo apt install gcc-multilib
+            sudo apt install gcc-aarch64-linux-gnu
+            sudo apt install g++-multilib
+            sudo apt install g++-aarch64-linux-gnu
+
+            # FFmpeg dependencies
+            sudo apt install autoconf
+            sudo apt install automake
+            sudo apt install libtool
+            sudo apt install libltdl-dev
+            sudo apt install libx11-dev
+            sudo apt install libxft-dev
+            sudo apt install libxext-dev
+            sudo apt install libwayland-dev
+            sudo apt install libxkbcommon-dev
+            sudo apt install libegl1-mesa-dev
+            sudo apt install libibus-1.0-dev
+            sudo apt install nasm
+            sudo apt install pkg-config
+          fi
+
+          # MacOS
+          if [ "${{ runner.os }}" == "macOS" ]; then
+            # FFmpeg dependencies
+            brew install autoconf
+            brew install automake
+            brew install libtool
+            brew install libx11
+            brew install libxft
+            brew install libxext
+            brew install nasm
+          fi
 
       - name: Build FFmpeg
         run: >
-          ./vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
+          vcpkg/vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
           --triplet ${{ steps.config.outputs.triplet }}
           --recurse
+          --overlay-ports self/overlays/ports/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
-          path: installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
+          path: vcpkg/installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
           if-no-files-found: error
 
   # Create a new release with the tag matching the FFmpeg version
@@ -248,14 +272,9 @@ jobs:
           - x86
           - arm64
         exclude:
-          # macOS x86 is not a concept that exists
+          # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
-          # Can't build for these targets for some reason
-          - target-platform: linux
-            target-arch: x86
-          - target-platform: linux
-            target-arch: arm64
 
     runs-on: ubuntu-latest
     permissions:
