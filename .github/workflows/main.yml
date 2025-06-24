@@ -104,8 +104,6 @@ jobs:
           --recurse
           --triplet ${{ matrix.target-arch }}-${{ matrix.target-platform }}
           --x-manifest-root self/
-          --overlay-ports self/overlays/ports/
-          --overlay-triplets self/overlays/triplets/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
