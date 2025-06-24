@@ -39,7 +39,7 @@
         "opencl",
         {
           "name": "opengl",
-          "platform": "!(linux & x86) & !(linux & arm64)"
+          "platform": "!(linux & x86) & !(linux & arm64) & !android"
         },
         "openjpeg",
         "openmpt",

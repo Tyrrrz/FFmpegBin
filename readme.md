@@ -14,7 +14,7 @@
     </tr>
 </table>
 
-**FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux and macOS.
+**FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux, macOS, and Android.
 You can find ready to download assets for each platform in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
 
 Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
