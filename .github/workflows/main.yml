@@ -54,19 +54,19 @@ jobs:
       fail-fast: false
       matrix:
         target-platform:
-          - linux
           - windows
+          - linux
           - osx
         target-arch:
-          - x64
-          - x86
           - arm64
-        # Determine the runner OS based on the target platform
+          - x86
+          - x64
         include:
-          - target-platform: linux
-            os: ubuntu-latest
+          # Determine the runner OS based on the target platform
           - target-platform: windows
             os: windows-latest
+          - target-platform: linux
+            os: ubuntu-latest
           - target-platform: osx
             os: macos-latest
         exclude:
@@ -96,14 +96,14 @@ jobs:
         run: ${{ runner.os == 'Windows' && 'vcpkg/bootstrap-vcpkg.bat' || 'vcpkg/bootstrap-vcpkg.sh' }}
 
       - name: Install dependencies
-        run: ${{ runner.os == 'Windows' && 'self/install-deps-windows.ps1' || runner.os == 'Linux' && 'self/install-deps-linux.sh' || 'self/install-deps-macos.sh' }}
+        run: ${{ runner.os == 'Windows' && 'self/install-deps-windows.ps1' || runner.os == 'Linux' && 'self/install-deps-linux.sh' || 'self/install-deps-osx.sh' }}
 
       - name: Build FFmpeg
         run: >
           vcpkg/vcpkg install
           --recurse
           --triplet ${{ matrix.target-arch }}-${{ matrix.target-platform }}
-          --x-manifest-root self/vcpkg.json
+          --x-manifest-root self/
           --overlay-ports self/overlays/ports/
           --overlay-triplets self/overlays/triplets/
 
@@ -146,13 +146,13 @@ jobs:
     strategy:
       matrix:
         target-platform:
-          - linux
           - windows
+          - linux
           - osx
         target-arch:
-          - x64
-          - x86
           - arm64
+          - x86
+          - x64
         exclude:
           # macOS x86 is obsolete
           - target-platform: osx
