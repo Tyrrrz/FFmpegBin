@@ -7,8 +7,14 @@
       "default-features": false,
       "features": [
         "ffmpeg",
-        "ffplay",
-        "ffprobe",
+        {
+          "name": "ffplay",
+          "platform": "!android"
+        },
+        {
+          "name": "ffprobe",
+          "platform": "!android"
+        },
         "nonfree",
         {
           "name": "aom",
