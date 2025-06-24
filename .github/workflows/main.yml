@@ -70,6 +70,7 @@ jobs:
           - target-platform: osx
             os: macos-latest
         exclude:
+          # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
 
@@ -271,6 +272,7 @@ jobs:
           - x86
           - arm64
         exclude:
+          # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
 
