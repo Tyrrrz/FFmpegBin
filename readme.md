@@ -16,6 +16,9 @@
 
 **FFmpegBin** is a repository that contains static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux and macOS.
 
+Builds are performed on a regular schedule using [vcpkg](https://github.com/microsoft/vcpkg).
+For a list of enabled FFmpeg features, see [the manifest file](vcpkg.json).
+
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:

@@ -95,141 +95,23 @@ jobs:
       - name: Bootstrap vcpkg
         run: ${{ runner.os == 'Windows' && 'vcpkg/bootstrap-vcpkg.bat' || 'vcpkg/bootstrap-vcpkg.sh' }}
 
-      - name: Determine configuration
-        id: config
-        shell: bash
-        run: |
-          moniker="${{ matrix.target-arch }}-${{ matrix.target-platform }}"
-
-          triplet_preferences=(
-            "$moniker-static-release"
-            "$moniker-static"
-            "$moniker-release"
-            "$moniker"
-          )
-
-          triplet=$(
-            for triplet in "${triplet_preferences[@]}"; do
-              if [ -f "vcpkg/triplets/$triplet.cmake" ] || [ -f "vcpkg/triplets/community/$triplet.cmake" ]; then
-                echo "$triplet"
-                break
-              fi
-            done
-          )
-
-          features=(
-            "core"
-
-            "ffmpeg"
-            "ffplay"
-            "ffprobe"
-
-            "nonfree"
-
-            ${{ !(matrix.target-platform == 'windows' && matrix.target-arch == 'x86') && '"aom"' || '' }}
-            ${{ matrix.target-platform != 'osx' && '"amf"' || '' }}
-            "ass"
-            "avcodec"
-            "avdevice"
-            "avfilter"
-            "avformat"
-            "bzip2"
-            "dav1d"
-            "freetype"
-            "fribidi"
-            "iconv"
-            "ilbc"
-            "lzma"
-            "modplug"
-            "mp3lame"
-            ${{ (matrix.target-platform == 'linux' || (matrix.target-platform == 'windows' && matrix.target-arch != 'arm64')) && '"nvcodec"' || '' }}
-            "opencl"
-            ${{ (matrix.target-platform != 'linux' || (matrix.target-arch != 'arm64' && matrix.target-arch != 'x86')) && '"opengl"' || '' }}
-            "openjpeg"
-            "openmpt"
-            "openssl"
-            "opus"
-            "postproc"
-            "sdl2"
-            "snappy"
-            "soxr"
-            "speex"
-            "srt"
-            "ssh"
-            "swresample"
-            "swscale"
-            "theora"
-            "vorbis"
-            "vpx"
-            "webp"
-            "x264"
-            ${{ !(matrix.target-platform == 'windows' && matrix.target-arch == 'arm64') && '"x265"' || '' }}
-            "xml2"
-            "zlib"
-          )
-
-          features_string=$(IFS=, ; echo "${features[*]}")
-
-          echo "triplet=$triplet" >> $GITHUB_OUTPUT
-          echo "features=$features_string" >> $GITHUB_OUTPUT
-
       - name: Install dependencies
-        shell: bash
-        run: |
-          # Linux
-          if [ "${{ runner.os }}" == "Linux" ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt update
-
-            # X-compilation support
-            sudo apt install linux-headers-$(uname -r)
-            sudo apt install linux-libc-dev:i386
-            sudo apt install libc6-dev-i386
-            sudo apt install gcc-multilib
-            sudo apt install gcc-aarch64-linux-gnu
-            sudo apt install g++-multilib
-            sudo apt install g++-aarch64-linux-gnu
-
-            # FFmpeg dependencies
-            sudo apt install autoconf
-            sudo apt install automake
-            sudo apt install libtool
-            sudo apt install libltdl-dev
-            sudo apt install libx11-dev
-            sudo apt install libxft-dev
-            sudo apt install libxext-dev
-            sudo apt install libwayland-dev
-            sudo apt install libxkbcommon-dev
-            sudo apt install libegl1-mesa-dev
-            sudo apt install libibus-1.0-dev
-            sudo apt install nasm
-            sudo apt install pkg-config
-          fi
-
-          # MacOS
-          if [ "${{ runner.os }}" == "macOS" ]; then
-            # FFmpeg dependencies
-            brew install autoconf
-            brew install automake
-            brew install libtool
-            brew install libx11
-            brew install libxft
-            brew install libxext
-            brew install nasm
-          fi
+        run: ${{ runner.os == 'Windows' && 'self/install-deps-windows.bat' || runner.os == 'Linux' && 'self/install-deps-linux.sh' || 'self/install-deps-macos.sh' }}
 
       - name: Build FFmpeg
         run: >
-          vcpkg/vcpkg install ffmpeg[${{ steps.config.outputs.features }}]
-          --triplet ${{ steps.config.outputs.triplet }}
+          vcpkg/vcpkg install
           --recurse
+          --triplet ${{ matrix.target-arch }}-${{ matrix.target-platform }}
+          --x-manifest-root self/vcpkg.json
           --overlay-ports self/overlays/ports/
+          --overlay-triplets self/overlays/triplets/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
           name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
-          path: vcpkg/installed/${{ steps.config.outputs.triplet }}/tools/ffmpeg/
+          path: self/vcpkg_installed/${{ matrix.target-arch }}-${{ matrix.target-platform }}/tools/ffmpeg/
           if-no-files-found: error
 
   # Create a new release with the tag matching the FFmpeg version

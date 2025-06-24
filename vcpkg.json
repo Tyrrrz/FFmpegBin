@@ -1,0 +1,70 @@
+{
+  "name": "FFmpegBin",
+  "dependencies": [
+    {
+      "name": "ffmpeg",
+      "features": [
+        "core",
+        "ffmpeg",
+        "ffplay",
+        "ffprobe",
+        "nonfree",
+        {
+          "name": "aom",
+          "platform": "!(windows & x86)"
+        },
+        {
+          "name": "amf",
+          "platform": "!osx"
+        },
+        "ass",
+        "avcodec",
+        "avdevice",
+        "avfilter",
+        "avformat",
+        "bzip2",
+        "dav1d",
+        "freetype",
+        "fribidi",
+        "iconv",
+        "ilbc",
+        "lzma",
+        "modplug",
+        "mp3lame",
+        {
+          "name": "nvcodec",
+          "platform": "!(windows & arm64) & !osx"
+        },
+        "opencl",
+        {
+          "name": "opengl",
+          "platform": "!(linux & x86) & !(linux & arm64)"
+        },
+        "openjpeg",
+        "openmpt",
+        "openssl",
+        "opus",
+        "postproc",
+        "sdl2",
+        "snappy",
+        "soxr",
+        "speex",
+        "srt",
+        "ssh",
+        "swresample",
+        "swscale",
+        "theora",
+        "vorbis",
+        "vpx",
+        "webp",
+        "x264",
+        {
+          "name": "x265",
+          "platform": "!(windows & arm64)"
+        },
+        "xml2",
+        "zlib"
+      ]
+    }
+  ]
+}
