@@ -5,7 +5,6 @@
       "name": "ffmpeg",
       "default-features": false,
       "features": [
-        "core",
         "ffmpeg",
         "ffplay",
         "ffprobe",
