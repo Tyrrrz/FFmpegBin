@@ -1,5 +1,5 @@
 {
-  "name": "FFmpegBin",
+  "name": "ffmpegbin",
   "dependencies": [
     {
       "name": "ffmpeg",
