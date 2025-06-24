@@ -3,6 +3,7 @@
   "dependencies": [
     {
       "name": "ffmpeg",
+      "default-features": false,
       "features": [
         "core",
         "ffmpeg",
