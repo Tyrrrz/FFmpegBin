@@ -35,3 +35,9 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 - **[Latest version](https://github.com/Tyrrrz/FFmpegBin/releases/latest)**
 - [All versions](https://github.com/Tyrrrz/FFmpegBin/releases)
+
+To programmatically fetch a specific release, use the following URL pattern:
+
+```
+https://github.com/Tyrrrz/FFmpegBin/releases/download/${VERSION}/ffmpeg-${OS}-${ARCH}.zip
+```
