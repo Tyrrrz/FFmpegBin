@@ -14,9 +14,10 @@
     </tr>
 </table>
 
-**FFmpegBin** is a repository that contains static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux and macOS.
+**FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux and macOS.
+You can find ready to download FFmpeg assets for each platform in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
 
-Builds are performed on a regular basis, automatically using [vcpkg](https://github.com/microsoft/vcpkg).
+Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
 For a list of enabled FFmpeg features, see [the manifest file](vcpkg.json).
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
