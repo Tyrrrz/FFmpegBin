@@ -57,6 +57,7 @@ jobs:
           - windows
           - linux
           - osx
+          - android
         target-arch:
           - arm64
           - x86
@@ -69,6 +70,8 @@ jobs:
             os: ubuntu-latest
           - target-platform: osx
             os: macos-latest
+          - target-platform: android
+            os: ubuntu-latest
         exclude:
           # macOS x86 is obsolete
           - target-platform: osx
@@ -147,6 +150,7 @@ jobs:
           - windows
           - linux
           - osx
+          - android
         target-arch:
           - arm64
           - x86
