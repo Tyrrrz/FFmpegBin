@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 brew install autoconf
 brew install automake
 brew install libtool
