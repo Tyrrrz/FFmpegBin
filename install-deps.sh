@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # macOS
-if [ "$(uname)" == "Darwin"]; then
+if [ "$(uname)" == "Darwin" ]; then
   brew install autoconf
   brew install automake
   brew install libtool
