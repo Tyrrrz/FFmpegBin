@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target-platform:
+        target-os:
           - windows
           - linux
           - osx
@@ -64,27 +64,27 @@ jobs:
           - x86
           - x64
         include:
-          # Determine the runner OS based on the target platform
-          - target-platform: windows
+          # Determine the runner OS based on the target OS
+          - target-os: windows
             os: windows-latest
-          - target-platform: linux
+          - target-os: linux
             os: ubuntu-latest
-          - target-platform: osx
+          - target-os: osx
             os: macos-latest
-          - target-platform: android
+          - target-os: android
             os: ubuntu-latest
         exclude:
           # Windows arm is obsolete
-          - target-platform: windows
+          - target-os: windows
             target-arch: arm
           # Linux arm is obsolete
-          - target-platform: linux
+          - target-os: linux
             target-arch: arm
           # macOS arm does not exist
-          - target-platform: osx
+          - target-os: osx
             target-arch: arm
           # macOS x86 is obsolete
-          - target-platform: osx
+          - target-os: osx
             target-arch: x86
 
     runs-on: ${{ matrix.os }}
@@ -115,14 +115,14 @@ jobs:
         run: >
           vcpkg/vcpkg install
           --recurse
-          --triplet ${{ matrix.target-arch }}-${{ matrix.target-platform }}
+          --triplet ${{ matrix.target-arch }}-${{ matrix.target-os }}
           --x-manifest-root self/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
-          name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
-          path: self/vcpkg_installed/${{ matrix.target-arch }}-${{ matrix.target-platform }}/tools/ffmpeg/
+          name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
+          path: self/vcpkg_installed/${{ matrix.target-arch }}-${{ matrix.target-os }}/tools/ffmpeg/
           if-no-files-found: error
 
   # Create a new release with the tag matching the FFmpeg version
@@ -156,7 +156,7 @@ jobs:
 
     strategy:
       matrix:
-        target-platform:
+        target-os:
           - windows
           - linux
           - osx
@@ -168,16 +168,16 @@ jobs:
           - x64
         exclude:
           # Windows arm is obsolete
-          - target-platform: windows
+          - target-os: windows
             target-arch: arm
           # Linux arm is obsolete
-          - target-platform: linux
+          - target-os: linux
             target-arch: arm
           # macOS arm does not exist
-          - target-platform: osx
+          - target-os: osx
             target-arch: arm
           # macOS x86 is obsolete
-          - target-platform: osx
+          - target-os: osx
             target-arch: x86
 
     runs-on: ubuntu-latest
@@ -189,11 +189,11 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # 4.3.0
         with:
-          name: ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}
+          name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
           path: ffmpeg/
 
       - name: Set permissions
-        if: ${{ matrix.target-platform != 'windows' }}
+        if: ${{ matrix.target-os != 'windows' }}
         run: |
           chmod +x ffmpeg/ffmpeg
           chmod +x ffmpeg/ffplay
@@ -202,12 +202,12 @@ jobs:
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
         working-directory: ffmpeg/
-        run: zip -r ../ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip .
+        run: zip -r ../ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}.zip .
 
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           gh release upload ${{ needs.version.outputs.version }}
-          ffmpeg-${{ matrix.target-platform }}-${{ matrix.target-arch }}.zip
+          ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}.zip
           --repo ${{ github.event.repository.full_name }}
