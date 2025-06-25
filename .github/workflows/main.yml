@@ -59,6 +59,7 @@ jobs:
           - osx
           - android
         target-arch:
+          - arm
           - arm64
           - x86
           - x64
@@ -73,6 +74,15 @@ jobs:
           - target-platform: android
             os: ubuntu-latest
         exclude:
+          # Windows arm is obsolete
+          - target-platform: windows
+            target-arch: arm
+          # Linux arm is obsolete
+          - target-platform: linux
+            target-arch: arm
+          # macOS arm does not exist
+          - target-platform: osx
+            target-arch: arm
           # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
@@ -152,10 +162,20 @@ jobs:
           - osx
           - android
         target-arch:
+          - arm
           - arm64
           - x86
           - x64
         exclude:
+          # Windows arm is obsolete
+          - target-platform: windows
+            target-arch: arm
+          # Linux arm is obsolete
+          - target-platform: linux
+            target-arch: arm
+          # macOS arm does not exist
+          - target-platform: osx
+            target-arch: arm
           # macOS x86 is obsolete
           - target-platform: osx
             target-arch: x86
