@@ -14,11 +14,30 @@
     </tr>
 </table>
 
-**FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for Windows, Linux, macOS, and Android.
-You can find ready to download assets for each platform in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
+**FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for an array of different platforms.
+You can find ready to download assets for each target in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
+
+Currently supported targets:
+
+- **Windows**:
+  - `arm64` (`aarch64`)
+  - `x64` (`x86_64`, `amd64`)
+  - `x86` (`i686`)
+- **Linux**:
+  - `arm64` (`aarch64`)
+  - `x64` (`x86_64`, `amd64`)
+  - `x86` (`i686`)
+- **macOS**:
+  - `arm64` (`aarch64`)
+  - `x64` (`x86_64`, `amd64`)
+- **Android**:
+  - `arm64` (`aarch64`, `arm64-v8a`)
+  - `arm` (`armeabi-v7a`)
+  - `x64` (`x86_64`, `amd64`)
+  - `x86` (`i686`)
 
 Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
-For a list of enabled FFmpeg features, see [the manifest file](vcpkg.json).
+For a list of enabled FFmpeg features, see the [manifest file](vcpkg.json).
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
