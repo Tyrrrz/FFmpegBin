@@ -118,7 +118,15 @@ jobs:
           --triplet ${{ matrix.target-arch }}-${{ matrix.target-os }}
           --x-manifest-root self/
 
-      - name: Upload artifacts
+      - name: Upload build logs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
+        if: ${{ !cancelled() }}
+        with:
+          name: logs-${{ matrix.target-os }}-${{ matrix.target-arch }}
+          path: vcpkg/buildtrees/**/*.log
+          if-no-files-found: ignore
+
+      - name: Upload build output
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
         with:
           name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
@@ -186,7 +194,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Download artifacts
+      - name: Download build output
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # 4.3.0
         with:
           name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
