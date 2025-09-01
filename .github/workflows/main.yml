@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout vcpkg
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
           repository: microsoft/vcpkg
           ref: master
@@ -94,12 +94,12 @@ jobs:
 
     steps:
       - name: Checkout self
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
           path: self/
 
       - name: Checkout vcpkg
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
           repository: microsoft/vcpkg
           ref: master
@@ -195,7 +195,7 @@ jobs:
 
     steps:
       - name: Download build output
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # 4.3.0
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # 5.0.0
         with:
           name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
           path: ffmpeg/
