@@ -4,14 +4,14 @@
 if [ "$(uname)" == "Darwin" ]; then
   brew update
 
-  brew upgrade autoconf || brew install autoconf
-  brew upgrade autoconf-archive || brew install autoconf-archive
-  brew upgrade automake || brew install automake
-  brew upgrade libtool || brew install libtool
-  brew upgrade libx11 || brew install libx11
-  brew upgrade libxft || brew install libxft
-  brew upgrade libxext || brew install libxext
-  brew upgrade nasm || brew install nasm
+  brew install autoconf
+  brew install autoconf-archive
+  brew install automake
+  brew install libtool
+  brew install libx11
+  brew install libxft
+  brew install libxext
+  brew install nasm@2.16 # aom doesn't support newer versions on x64
 # Linux
 else
   # Allow :i386 architecture for 32-bit cross-compilation support
