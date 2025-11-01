@@ -119,7 +119,7 @@ jobs:
           --x-manifest-root self/
 
       - name: Upload build logs
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # 5.0.0
         if: ${{ !cancelled() }}
         with:
           name: logs-${{ matrix.target-os }}-${{ matrix.target-arch }}
@@ -127,7 +127,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload build output
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # 4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # 5.0.0
         with:
           name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
           path: self/vcpkg_installed/${{ matrix.target-arch }}-${{ matrix.target-os }}/tools/ffmpeg/
@@ -195,7 +195,7 @@ jobs:
 
     steps:
       - name: Download build output
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # 5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # 6.0.0
         with:
           name: ffmpeg-${{ matrix.target-os }}-${{ matrix.target-arch }}
           path: ffmpeg/
