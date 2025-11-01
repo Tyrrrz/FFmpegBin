@@ -3,6 +3,7 @@
 # macOS
 if [ "$(uname)" == "Darwin" ]; then
   brew install autoconf
+  brew install autoconf-archive
   brew install automake
   brew install libtool
   brew install libx11
@@ -28,6 +29,7 @@ else
 
   # FFmpeg dependencies
   sudo apt install autoconf
+  sudo apt install autoconf-archive
   sudo apt install automake
   sudo apt install libtool
   sudo apt install libltdl-dev
