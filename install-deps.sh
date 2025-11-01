@@ -11,7 +11,7 @@ if [ "$(uname)" == "Darwin" ]; then
   brew install libx11
   brew install libxft
   brew install libxext
-  brew install nasm@2.16 # aom doesn't support newer versions on x64
+  brew install nasm
 # Linux
 else
   # Allow :i386 architecture for 32-bit cross-compilation support
