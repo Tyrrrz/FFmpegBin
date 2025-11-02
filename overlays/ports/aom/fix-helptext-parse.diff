@@ -3,11 +3,11 @@ index aaef2c310..5500ad4a3 100644
 --- a/build/cmake/aom_optimization.cmake
 +++ b/build/cmake/aom_optimization.cmake
 @@ -217,7 +217,7 @@ function(test_nasm)
-
+ 
    if(NOT "${nasm_helptext}" MATCHES "-Ox")
      message(
 -      FATAL_ERROR "Unsupported nasm: multipass optimization not supported.")
 +      "Unsupported nasm: multipass optimization not supported.")
    endif()
-
+ 
    if("${AOM_TARGET_CPU}" STREQUAL "x86")
