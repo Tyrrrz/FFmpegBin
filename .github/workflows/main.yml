@@ -205,8 +205,8 @@ jobs:
         if: ${{ matrix.target-os != 'windows' }}
         run: |
           chmod +x ffmpeg/ffmpeg
-          [ -f ffmpeg/ffplay ] && chmod +x ffmpeg/ffplay
-          [ -f ffmpeg/ffprobe ] && chmod +x ffmpeg/ffprobe
+          [ -f ffmpeg/ffplay ] && chmod +x ffmpeg/ffplay || true
+          [ -f ffmpeg/ffprobe ] && chmod +x ffmpeg/ffprobe || true
 
       - name: Create package
         # Change into the artifacts directory to avoid including the directory itself in the zip archive
