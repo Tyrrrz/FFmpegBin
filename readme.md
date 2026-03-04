@@ -1,8 +1,8 @@
 # FFmpegBin
 
-[![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
+[![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/prime/docs/project-status.md)
 [![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
-[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/FFmpegBin/main.yml?branch=master)](https://github.com/Tyrrrz/FFmpegBin/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/FFmpegBin/main.yml?branch=prime)](https://github.com/Tyrrrz/FFmpegBin/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/FFmpegBin.svg)](https://github.com/Tyrrrz/FFmpegBin/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/FFmpegBin/total.svg)](https://github.com/Tyrrrz/FFmpegBin/releases)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
@@ -29,7 +29,7 @@ Currently supported targets:
 Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
 For a list of enabled FFmpeg features, see the [manifest file](vcpkg.json).
 
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
+## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/prime/docs/why-so-political.md)</sup>
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
 

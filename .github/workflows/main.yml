@@ -3,7 +3,7 @@ name: main
 on:
   push:
     branches:
-      - master
+      - prime
     paths-ignore:
       - "**.md"
   schedule:
@@ -140,8 +140,8 @@ jobs:
       - version
       - pack
 
-    # Only release when running on master
-    if: ${{ github.ref_type == 'branch' && github.ref_name == 'master' }}
+    # Only release when running on prime
+    if: ${{ github.ref_type == 'branch' && github.ref_name == 'prime' }}
 
     runs-on: ubuntu-latest
     permissions:
