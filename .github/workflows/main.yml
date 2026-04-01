@@ -222,7 +222,10 @@ jobs:
           --repo ${{ github.event.repository.full_name }}
 
   notify:
-    needs: deploy
+    needs: 
+      - version
+      - deploy
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -238,6 +241,6 @@ jobs:
             Content-Type: application/json; charset=UTF-8
           body: |
             {
-              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ github.ref_name }} has been released!"
+              "content": "[**${{ github.event.repository.name }}**](<${{ github.event.repository.html_url }}>) v${{ needs.version.outputs.version }} has been released!"
             }
           retry-count: 5
