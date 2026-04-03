@@ -14,6 +14,10 @@
     </tr>
 </table>
 
+<p align="center">
+    <img src="favicon.png" alt="Icon" />
+</p>
+
 **FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for an array of different platforms.
 You can find ready to download assets for each target in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
 
