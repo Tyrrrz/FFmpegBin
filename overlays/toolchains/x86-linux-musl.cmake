@@ -1,0 +1,11 @@
+set(CMAKE_C_COMPILER /opt/musl/i686-linux-musl-cross/bin/i686-linux-musl-gcc)
+set(CMAKE_CXX_COMPILER /opt/musl/i686-linux-musl-cross/bin/i686-linux-musl-g++)
+set(CMAKE_AR /opt/musl/i686-linux-musl-cross/bin/i686-linux-musl-ar)
+set(CMAKE_RANLIB /opt/musl/i686-linux-musl-cross/bin/i686-linux-musl-ranlib)
+set(CMAKE_STRIP /opt/musl/i686-linux-musl-cross/bin/i686-linux-musl-strip)
+
+set(CMAKE_FIND_ROOT_PATH /opt/musl/i686-linux-musl-cross/i686-linux-musl)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
