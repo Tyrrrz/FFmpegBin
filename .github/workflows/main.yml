@@ -12,6 +12,7 @@ on:
   push:
     branches:
       - prime
+      - copilot/add-musl-builds-ffmpeg # temporary: enable CI on this branch
   pull_request:
     branches:
       - prime
@@ -42,7 +43,7 @@ jobs:
 
     outputs:
       version: ${{ steps.latest-ffmpeg.outputs.version }}
-      stale: ${{ inputs.skip-version-check || steps.latest-ffmpeg.outputs.version != steps.latest-release.outputs.version }}
+      stale: ${{ inputs.skip-version-check || github.ref_name == 'copilot/add-musl-builds-ffmpeg' || steps.latest-ffmpeg.outputs.version != steps.latest-release.outputs.version }}
 
   # Build FFmpeg for all supported platforms
   pack:
