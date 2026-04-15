@@ -29,11 +29,20 @@ else
   sudo apt install g++-multilib
   sudo apt install g++-aarch64-linux-gnu
 
-  # Musl cross-compilation toolchains (for Alpine/musl builds)
-  sudo mkdir -p /opt/musl
-  curl -L https://musl.cc/x86_64-linux-musl-cross.tgz | sudo tar xz -C /opt/musl
-  curl -L https://musl.cc/aarch64-linux-musl-cross.tgz | sudo tar xz -C /opt/musl
-  curl -L https://musl.cc/i686-linux-musl-cross.tgz | sudo tar xz -C /opt/musl
+  # Musl cross-compilation toolchains (for Alpine/musl builds; only installed when needed)
+  if [ "${INSTALL_MUSL_TOOLCHAIN:-0}" = "1" ]; then
+    download_and_extract_musl() {
+      url="$1"
+      archive="$(mktemp)" || exit 1
+      curl -fL "$url" -o "$archive"
+      sudo tar xzf "$archive" -C /opt/musl
+      rm -f "$archive"
+    }
+    sudo mkdir -p /opt/musl
+    download_and_extract_musl https://musl.cc/x86_64-linux-musl-cross.tgz
+    download_and_extract_musl https://musl.cc/aarch64-linux-musl-cross.tgz
+    download_and_extract_musl https://musl.cc/i686-linux-musl-cross.tgz
+  fi
 
   # FFmpeg dependencies
   sudo apt install autoconf

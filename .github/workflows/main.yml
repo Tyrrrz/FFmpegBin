@@ -117,6 +117,8 @@ jobs:
         run: ${{ runner.os == 'Windows' && 'vcpkg/bootstrap-vcpkg.bat' || 'vcpkg/bootstrap-vcpkg.sh' }}
 
       - name: Install dependencies
+        env:
+          INSTALL_MUSL_TOOLCHAIN: ${{ matrix.target-os == 'linux-musl' && '1' || '0' }}
         run: ${{ runner.os == 'Windows' && 'self/install-deps.ps1' || 'self/install-deps.sh' }}
 
       - name: Build FFmpeg
