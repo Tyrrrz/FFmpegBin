@@ -1,19 +1,20 @@
 name: main
 
 on:
-  push:
-    branches:
-      - prime
-    paths-ignore:
-      - "**.md"
-  schedule:
-    - cron: "0 0 1 * *"
   workflow_dispatch:
     inputs:
       skip-version-check:
         type: boolean
         description: Skip version check
         required: false
+  schedule:
+    - cron: "0 0 1 * *"
+  push:
+    branches:
+      - prime
+  pull_request:
+    branches:
+      - prime
 
 jobs:
   # Check if the latest version of FFmpeg in vcpkg is newer than the latest release
