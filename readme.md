@@ -30,9 +30,6 @@ Currently supported targets:
 | `x64` / `x86_64` / `amd64` | ✅      | ✅    | ✅           | ✅    | ✅                 |
 | `x86` / `i386`             | ✅      | ✅    | ✅           | ❌    | ✅                 |
 
-Linux (musl) builds link statically against [musl libc](https://musl.libc.org) and are suitable for Alpine Linux and other musl-based distributions.
-Note that `ffplay`, `avdevice`, OpenGL, and SDL2 support are excluded from musl builds due to the absence of display system libraries in the musl sysroot.
-
 Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
 For a list of enabled FFmpeg features, see the [manifest file](vcpkg.json).
 
