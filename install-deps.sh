@@ -29,19 +29,30 @@ else
   sudo apt install g++-multilib
   sudo apt install g++-aarch64-linux-gnu
 
-  # Musl cross-compilation toolchains (for Alpine/musl builds; only installed when needed)
+  # Musl cross-compilation toolchains via zig cc (for Alpine/musl builds; only installed when needed)
   if [ "${INSTALL_MUSL_TOOLCHAIN:-0}" = "1" ]; then
-    download_and_extract_musl() {
-      url="$1"
-      archive="$(mktemp)" || exit 1
-      curl -fL "$url" -o "$archive"
-      sudo tar xzf "$archive" -C /opt/musl
-      rm -f "$archive"
-    }
-    sudo mkdir -p /opt/musl
-    download_and_extract_musl https://musl.cc/x86_64-linux-musl-cross.tgz
-    download_and_extract_musl https://musl.cc/aarch64-linux-musl-cross.tgz
-    download_and_extract_musl https://musl.cc/i686-linux-musl-cross.tgz
+    # Download zig, which provides built-in musl cross-compilation for all target architectures
+    ZIG_VERSION="0.13.0"
+    archive="$(mktemp)" || exit 1
+    curl -fL "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-x86_64-${ZIG_VERSION}.tar.xz" -o "$archive"
+    sudo mkdir -p /opt/zig
+    sudo tar xJf "$archive" --strip-components=1 -C /opt/zig
+    rm -f "$archive"
+
+    # Create zig cc-backed C/C++ compiler wrappers for each musl target
+    for triple in x86_64-linux-musl aarch64-linux-musl i686-linux-musl; do
+      case "$triple" in
+        x86_64-linux-musl) zig_target="x86_64-linux-musl" ;;
+        aarch64-linux-musl) zig_target="aarch64-linux-musl" ;;
+        i686-linux-musl) zig_target="x86-linux-musl" ;;
+      esac
+      printf '#!/bin/sh\nexec /opt/zig/zig cc -target %s "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-gcc" > /dev/null
+      printf '#!/bin/sh\nexec /opt/zig/zig c++ -target %s "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-g++" > /dev/null
+      printf '#!/bin/sh\nexec /opt/zig/zig ar "$@"\n' | sudo tee "/usr/local/bin/${triple}-ar" > /dev/null
+      printf '#!/bin/sh\nexec /opt/zig/zig ar -s "$@"\n' | sudo tee "/usr/local/bin/${triple}-ranlib" > /dev/null
+      sudo chmod +x "/usr/local/bin/${triple}-gcc" "/usr/local/bin/${triple}-g++" \
+        "/usr/local/bin/${triple}-ar" "/usr/local/bin/${triple}-ranlib"
+    done
   fi
 
   # FFmpeg dependencies
