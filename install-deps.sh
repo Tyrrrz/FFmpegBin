@@ -47,15 +47,37 @@ else
         i686-linux-musl) zig_target="x86-linux-musl" ;;
       esac
       # zig cc is clang-based; two compatibility shims are needed:
-      # 1. Fall back to host GCC/G++ for preprocessing-only (-E) invocations.
-      #    zig cc (clang) rejects gperf %-directives in template files that GCC
-      #    silently passes through (e.g. fontconfig's fcobjshash.gperf.h).
+      # 1. For -E (preprocess-only), try zig cc first. If zig cc fails (e.g. because
+      #    a build system passes a file with gperf %-directives that clang rejects but
+      #    GCC silently passes through), fall back to host GCC/G++.
+      #    Using "try zig cc first" (rather than "always use GCC for -E") prevents a
+      #    different failure: some build systems (e.g. libvpx) accumulate Clang-only
+      #    flags (like -flax-vector-conversions=none) in CFLAGS and then run the
+      #    preprocessor with those flags — GCC errors on them, but zig cc does not.
       # 2. Pass -Wno-unknown-warning-option and -Qunused-arguments for compilation
       #    so that GCC-only flags used by some build systems (e.g. libvpx's
       #    -Wdisabled-optimization, -flax-vector-conversions=none) are silently
       #    ignored instead of causing zig cc to exit non-zero.
-      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec gcc "$@"; done\nexec /opt/zig/zig cc -target %s -Wno-unknown-warning-option -Qunused-arguments "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-gcc" > /dev/null
-      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec g++ "$@"; done\nexec /opt/zig/zig c++ -target %s -Wno-unknown-warning-option -Qunused-arguments "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-g++" > /dev/null
+      sudo tee "/usr/local/bin/${triple}-gcc" > /dev/null <<WRAPPER_EOF
+#!/bin/sh
+_has_E=0
+for _a in "\$@"; do [ "\$_a" = "-E" ] && _has_E=1; done
+if [ "\$_has_E" = "1" ]; then
+    /opt/zig/zig cc -target ${zig_target} -Wno-unknown-warning-option -Qunused-arguments "\$@" 2>/dev/null && exit 0
+    exec gcc "\$@"
+fi
+exec /opt/zig/zig cc -target ${zig_target} -Wno-unknown-warning-option -Qunused-arguments "\$@"
+WRAPPER_EOF
+      sudo tee "/usr/local/bin/${triple}-g++" > /dev/null <<WRAPPER_EOF
+#!/bin/sh
+_has_E=0
+for _a in "\$@"; do [ "\$_a" = "-E" ] && _has_E=1; done
+if [ "\$_has_E" = "1" ]; then
+    /opt/zig/zig c++ -target ${zig_target} -Wno-unknown-warning-option -Qunused-arguments "\$@" 2>/dev/null && exit 0
+    exec g++ "\$@"
+fi
+exec /opt/zig/zig c++ -target ${zig_target} -Wno-unknown-warning-option -Qunused-arguments "\$@"
+WRAPPER_EOF
       printf '#!/bin/sh\nexec /opt/zig/zig ar "$@"\n' | sudo tee "/usr/local/bin/${triple}-ar" > /dev/null
       printf '#!/bin/sh\nexec /opt/zig/zig ar -s "$@"\n' | sudo tee "/usr/local/bin/${triple}-ranlib" > /dev/null
       sudo chmod +x "/usr/local/bin/${triple}-gcc" "/usr/local/bin/${triple}-g++" \
