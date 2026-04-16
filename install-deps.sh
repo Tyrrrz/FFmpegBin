@@ -46,12 +46,16 @@ else
         aarch64-linux-musl) zig_target="aarch64-linux-musl" ;;
         i686-linux-musl) zig_target="x86-linux-musl" ;;
       esac
-      # zig cc (clang-based) is stricter than GCC during preprocessing: it rejects
-      # gperf template files containing %-directives (e.g. fontconfig's fcobjshash.gperf.h)
-      # that GCC silently passes through in -E mode.  Fall back to host GCC/G++ for
-      # preprocessing-only invocations so those build steps succeed.
-      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec gcc "$@"; done\nexec /opt/zig/zig cc -target %s "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-gcc" > /dev/null
-      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec g++ "$@"; done\nexec /opt/zig/zig c++ -target %s "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-g++" > /dev/null
+      # zig cc is clang-based; two compatibility shims are needed:
+      # 1. Fall back to host GCC/G++ for preprocessing-only (-E) invocations.
+      #    zig cc (clang) rejects gperf %-directives in template files that GCC
+      #    silently passes through (e.g. fontconfig's fcobjshash.gperf.h).
+      # 2. Pass -Wno-unknown-warning-option and -Qunused-arguments for compilation
+      #    so that GCC-only flags used by some build systems (e.g. libvpx's
+      #    -Wdisabled-optimization, -flax-vector-conversions=none) are silently
+      #    ignored instead of causing zig cc to exit non-zero.
+      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec gcc "$@"; done\nexec /opt/zig/zig cc -target %s -Wno-unknown-warning-option -Qunused-arguments "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-gcc" > /dev/null
+      printf '#!/bin/sh\nfor _a in "$@"; do [ "$_a" = "-E" ] && exec g++ "$@"; done\nexec /opt/zig/zig c++ -target %s -Wno-unknown-warning-option -Qunused-arguments "$@"\n' "$zig_target" | sudo tee "/usr/local/bin/${triple}-g++" > /dev/null
       printf '#!/bin/sh\nexec /opt/zig/zig ar "$@"\n' | sudo tee "/usr/local/bin/${triple}-ar" > /dev/null
       printf '#!/bin/sh\nexec /opt/zig/zig ar -s "$@"\n' | sudo tee "/usr/local/bin/${triple}-ranlib" > /dev/null
       sudo chmod +x "/usr/local/bin/${triple}-gcc" "/usr/local/bin/${triple}-g++" \
