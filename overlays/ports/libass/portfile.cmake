@@ -9,8 +9,8 @@ vcpkg_from_github(
 )
 
 vcpkg_find_acquire_program(PKGCONFIG)
-get_filename_component(PKGCONFIG_EXE_PATH ${PKGCONFIG} DIRECTORY)
-vcpkg_add_to_path(${PKGCONFIG_EXE_PATH})
+get_filename_component(PKGCONFIG_EXE_PATH "${PKGCONFIG}" DIRECTORY)
+vcpkg_add_to_path("${PKGCONFIG_EXE_PATH}")
 
 list(APPEND options
     -Dcheckasm=disabled
