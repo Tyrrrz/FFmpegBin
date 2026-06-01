@@ -11,9 +11,6 @@ string(REGEX MATCH "^......." short_ref "${ref}")
 string(REGEX MATCH "[0-9]+\$" revision "${VERSION}")
 configure_file("${CURRENT_PORT_DIR}/version.diff.in" "${CURRENT_BUILDTREES_DIR}/src/version-${VERSION}.diff" @ONLY)
 
-# The official GitLab instance (code.videolan.org) intermittently returns
-# HTTP 502 for archive downloads; vcpkg retries failed downloads automatically,
-# so transient errors are handled without falling back to a third-party mirror.
 vcpkg_from_gitlab(
     GITLAB_URL https://code.videolan.org/
     OUT_SOURCE_PATH SOURCE_PATH
