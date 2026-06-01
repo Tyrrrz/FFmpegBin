@@ -11,6 +11,11 @@ string(REGEX MATCH "^......." short_ref "${ref}")
 string(REGEX MATCH "[0-9]+\$" revision "${VERSION}")
 configure_file("${CURRENT_PORT_DIR}/version.diff.in" "${CURRENT_BUILDTREES_DIR}/src/version-${VERSION}.diff" @ONLY)
 
+# Using a GitHub mirror instead of code.videolan.org because the official
+# GitLab instance intermittently returns HTTP 502 for archive downloads.
+# ibaoger/x264 is a mirror of the official repository; the tarball unpacks
+# to the same top-level directory name ("x264-<ref>"), so the SHA512 is
+# identical to the original code.videolan.org archive.
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ibaoger/x264

@@ -21,6 +21,10 @@ list(APPEND options
 )
 
 if(NOT VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_OSX AND NOT VCPKG_TARGET_IS_LINUX)
+    # On non-desktop targets (e.g. Android, iOS, Emscripten) there is no
+    # system font provider and fontconfig headers are not available, so
+    # disable both the system-font-provider requirement and the fontconfig
+    # integration to prevent meson from compiling ass_fontconfig.c.
     list(APPEND options -Drequire-system-font-provider=false -Dfontconfig=disabled)
 endif()
 
