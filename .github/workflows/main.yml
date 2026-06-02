@@ -234,7 +234,7 @@ jobs:
 
     steps:
       - name: Notify Discord
-        uses: tyrrrz/action-http-request@25f132e48dea89c0f6b7955398270b506e1d51cb # 1.1.4
+        uses: tyrrrz/action-http-request@110f1a0f0f7e91c3b2de349539249f4573c243fa # 1.1.5
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
