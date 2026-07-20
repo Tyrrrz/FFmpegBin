@@ -70,9 +70,11 @@ jobs:
           - target-os: windows
             os: windows-latest
           - target-os: linux
+            # Pin to 22.04 so the binary requires glibc >= 2.35 and runs broadly
             os: ubuntu-22.04
           - target-os: linux-musl
-            os: ubuntu-22.04
+            os: ubuntu-latest
+            container: alpine:3
           - target-os: osx
             os: macos-latest
           - target-os: android
@@ -98,6 +100,7 @@ jobs:
             target-arch: x86
 
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     permissions:
       contents: read
       actions: write
