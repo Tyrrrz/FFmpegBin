@@ -57,6 +57,7 @@ jobs:
         target-os:
           - windows
           - linux
+          - linux-musl
           - osx
           - android
         target-arch:
@@ -69,7 +70,9 @@ jobs:
           - target-os: windows
             os: windows-latest
           - target-os: linux
-            os: ubuntu-latest
+            os: ubuntu-22.04
+          - target-os: linux-musl
+            os: ubuntu-22.04
           - target-os: osx
             os: macos-latest
           - target-os: android
@@ -81,6 +84,12 @@ jobs:
           # Linux arm is obsolete
           - target-os: linux
             target-arch: arm
+          # Linux musl arm is too niche
+          - target-os: linux-musl
+            target-arch: arm
+          # Linux musl x86 is too niche
+          - target-os: linux-musl
+            target-arch: x86
           # macOS arm does not exist
           - target-os: osx
             target-arch: arm
@@ -169,6 +178,7 @@ jobs:
         target-os:
           - windows
           - linux
+          - linux-musl
           - osx
           - android
         target-arch:
@@ -183,6 +193,12 @@ jobs:
           # Linux arm is obsolete
           - target-os: linux
             target-arch: arm
+          # Linux musl arm is too niche
+          - target-os: linux-musl
+            target-arch: arm
+          # Linux musl x86 is too niche
+          - target-os: linux-musl
+            target-arch: x86
           # macOS arm does not exist
           - target-os: osx
             target-arch: arm

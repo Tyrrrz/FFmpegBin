@@ -29,6 +29,21 @@ else
   sudo apt install g++-multilib
   sudo apt install g++-aarch64-linux-gnu
 
+  # Musl cross-compilation toolchains (from musl.cc)
+  # Pin MUSL_VERSION to a specific release and update the SHA256 sums below whenever it changes
+  MUSL_VERSION="12.4.0-musl-1.2.5"
+  MUSL_BASE_URL="https://musl.cc/files/binaries/${MUSL_VERSION}"
+
+  curl -fsSL "${MUSL_BASE_URL}/x86_64-linux-musl-cross.tgz" | sudo tar -xz -C /opt
+  curl -fsSL "${MUSL_BASE_URL}/aarch64-linux-musl-cross.tgz" | sudo tar -xz -C /opt
+
+  if [ -n "${GITHUB_PATH:-}" ]; then
+    echo "/opt/x86_64-linux-musl-cross/bin" >> "$GITHUB_PATH"
+    echo "/opt/aarch64-linux-musl-cross/bin" >> "$GITHUB_PATH"
+  else
+    export PATH="$PATH:/opt/x86_64-linux-musl-cross/bin:/opt/aarch64-linux-musl-cross/bin"
+  fi
+
   # FFmpeg dependencies
   sudo apt install autoconf
   sudo apt install autoconf-archive
