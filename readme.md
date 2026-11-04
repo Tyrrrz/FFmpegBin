@@ -1,12 +1,10 @@
 # FFmpegBin
 
 [![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/prime/docs/project-status.md)
-[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
 [![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/FFmpegBin/main.yml?branch=prime)](https://github.com/Tyrrrz/FFmpegBin/actions)
 [![Release](https://img.shields.io/github/release/Tyrrrz/FFmpegBin.svg)](https://github.com/Tyrrrz/FFmpegBin/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/FFmpegBin/total.svg)](https://github.com/Tyrrrz/FFmpegBin/releases)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
 
 <table>
     <tr>
@@ -17,6 +15,9 @@
 <p align="center">
     <img src="favicon.png" alt="Icon" />
 </p>
+
+> **Made in 🇺🇦 Ukraine — [despite Russia's best efforts](https://tyrrrz.me/ukraine)**.
+> Using this project or its source code comes with the implicit agreement that you condemn Russia's war of aggression against Ukraine, recognize Russia as a terrorist state, and support Ukraine's territorial integrity.
 
 **FFmpegBin** is an automation workflow that produces static builds of [FFmpeg](https://ffmpeg.org) for an array of different platforms.
 You can find ready to download assets for each target in the [releases](https://github.com/Tyrrrz/FFmpegBin/releases) of this repository.
@@ -32,17 +33,6 @@ Currently supported targets:
 
 Builds are performed using [vcpkg](https://github.com/microsoft/vcpkg).
 For a list of enabled FFmpeg features, see the [manifest file](vcpkg.json).
-
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/prime/docs/why-so-political.md)</sup>
-
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
 
 ## Download
 
